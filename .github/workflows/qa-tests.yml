@@ -1,44 +1,54 @@
+name: QA Automation Tests
 
-  name: QA Automation Tests
+on:
+push:
+branches:
+  - main
+  - master
 
-  on:
-    push:
-      branches:
-        - main
-        - master
+pull_request:
+branches:
+  - main
+  - master
 
-    pull_request:
-      branches:
-        - main
-        - master
+workflow_dispatch:
 
-    workflow_dispatch:
+jobs:
 
-  jobs:
+test:
+name: Run QA Tests
+runs-on: ubuntu-latest
+  
+  ```
+steps:
 
-    test:
-      name: Run QA Tests
-      runs-on: ubuntu-latest
+  - name: Checkout repository
+    uses: actions/checkout@v4
 
-      steps:
+  - name: Set up Java 17
+    uses: actions/setup-java@v4
+    with:
+      distribution: temurin
+      java-version: '17'
+      cache: maven
 
-        - name: Checkout repository
-          uses: actions/checkout@v4
+  - name: Set up Chrome
+    uses: browser-actions/setup-chrome@v1
+    with:
+      chrome-version: stable
 
-        - name: Set up Java 17
-          uses: actions/setup-java@v4
-          with:
-            distribution: temurin
-            java-version: '17'
-            cache: maven
+  - name: Verify Chrome installation
+    run: |
+      google-chrome --version
+      chromedriver --version
 
-        - name: Run Maven tests
-          run: mvn clean test
+  - name: Run Maven tests
+    run: mvn clean test
 
-        - name: Upload Allure results
-          if: always()
-          uses: actions/upload-artifact@v4
-          with:
-            name: allure-results
-            path: target/allure-results
+  - name: Upload Allure results
+    if: always()
+    uses: actions/upload-artifact@v4
+    with:
+      name: allure-results
+      path: target/allure-results
 
