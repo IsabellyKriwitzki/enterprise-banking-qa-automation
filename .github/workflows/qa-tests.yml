@@ -40,6 +40,19 @@ jobs:
       - name: Run Maven tests
         run: mvn clean test
 
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline
+
+      - name: Generate Allure report
+        if: always()
+        run: allure generate target/allure-results -o target/allure-report --clean
+
+      - name: Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: target/allure-report
       - name: Upload Allure results
         if: always()
         uses: actions/upload-artifact@v4

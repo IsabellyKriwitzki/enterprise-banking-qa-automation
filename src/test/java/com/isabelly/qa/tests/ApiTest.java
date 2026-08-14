@@ -70,4 +70,67 @@ class ApiTest {
                 response.id() > 0
         );
     }
+
+    @Test @Story("Invalid Endpoint")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Validates that an invalid API endpoint returns HTTP 404.")
+    void shouldReturnNotFoundForInvalidEndpoint() {
+
+        Response response =
+                apiClient.getInvalidEndpoint();
+
+        assertEquals(
+                404, response.getStatusCode(),
+                "Expected HTTP 404 for an invalid endpoint" );
+    }
+
+    @Test
+    @Story("Invalid User Payload")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Validates the API behavior when an empty user payload is submitted.")
+    void shouldHandleInvalidUserPayload() {
+
+        Response response =
+                apiClient.createUserWithInvalidPayload();
+
+        assertNotNull(response);
+
+        System.out.println(
+                "Invalid payload HTTP status: " +
+                        response.getStatusCode()
+        );
+    }
+
+    @Test
+    @Story("API Response Validation")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Validates response headers and response time for the users endpoint.")
+    void shouldReturnValidResponseMetadata() {
+
+        Response response =
+                apiClient.getUsers();
+
+        assertEquals(
+                200,
+                response.getStatusCode(),
+                "Expected HTTP 200"
+        );
+
+        assertNotNull(
+                response.getHeader("Content-Type"),
+                "Content-Type header should be present"
+        );
+
+        assertTrue(
+                response.getHeader("Content-Type")
+                        .contains("application/json"),
+                "Response should be JSON"
+        );
+
+        assertTrue(
+                response.getTime() < 3000,
+                "API response time should be below 3 seconds"
+        );
+    }
+
 }

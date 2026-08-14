@@ -13,6 +13,7 @@ public class LoginApiClient {
     private final String baseUrl =
             ConfigReader.getProperty("api.base.url");
 
+
     @Step("Create user and deserialize response")
     public UserResponse createUserAsObject(UserRequest userRequest) {
 
@@ -24,8 +25,8 @@ public class LoginApiClient {
         return response.as(UserResponse.class);
     }
 
-    @Step("Send GET request to retrieve users")
-    public Response getUsers() {
+   @Step("Get users from API") 
+   public Response getUsers() {
 
         return given()
                 .baseUri(baseUrl)
@@ -34,7 +35,7 @@ public class LoginApiClient {
                 .get("/users");
     }
 
-    @Step("Send POST request to create user")
+    @Step("Create user: {userRequest.name}")
     public Response createUser(UserRequest userRequest) {
 
         return given()
@@ -45,5 +46,28 @@ public class LoginApiClient {
                 .when()
                 .post("/users");
     }
+
+    @Step("Get invalid API endpoint")
+    public Response getInvalidEndpoint() { return given()
+            .baseUri(baseUrl)
+            .header("Accept", "application/json")
+            .when()
+            .get("/invalid-endpoint");
+
+    }
+ 
+    @Step("Create user with invalid payload")
+    public Response createUserWithInvalidPayload() {
+
+        return given()
+                .baseUri(baseUrl)
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .body("{}")
+                .when()
+                .post("/users");
+    }
+
+
 }
 
