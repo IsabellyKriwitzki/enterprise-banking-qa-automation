@@ -1,0 +1,4 @@
+username,password,expectedResult,testName
+standard_user,secret_sauce,SUCCESS,Valid customer login
+standard_user,wrong_password,ERROR,Invalid password
+locked_out_user,secret_sauce,ERROR,Locked customer account
